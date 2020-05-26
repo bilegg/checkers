@@ -1,9 +1,9 @@
 var http = require("http");
 var fs = require("fs");
 var qs = require("querystring");
-var user_tab = [];
-var user1_turn = true
-var user2_turn = false
+var player_tab = [];
+var player1_turn = true
+var player2_turn = false
 var turn_end = false
 var table = [];
 var server = http.createServer(function (req, res) {
@@ -104,14 +104,14 @@ var server = http.createServer(function (req, res) {
 })
 
 
-function dodajUseraDoTablicy() {
-    if (user_tab.length < 2) {
-        if (finishObj.user == user_tab[0]) {
-            finishObj.user = "zajete"
+function add_user() {
+    if (player_tab.length < 2) {
+        if (finishObj.user == player_tab[0]) {
+            finishObj.user = "taken"
         }
         else {
-            user_tab.push(finishObj.user)
-            finishObj.user_number = user_tab.length
+            player_tab.push(finishObj.user)
+            finishObj.user_number = player_tab.length
         }
 
     }
@@ -120,28 +120,28 @@ function dodajUseraDoTablicy() {
     }
 }
 
-function wyczyscTablicaUserow() {
-    user_tab = []
+function clear_array() {
+    player_tab = []
 }
 
-function czyJestDwochUserow() {
-    if (user_tab.length == 2) finishObj.check_user = true
+function check_for_two_users() {
+    if (player_tab.length == 2) finishObj.check_user = true
 }
 
-function check() {
-    if (user1_turn) finishObj.who_plays = "u1"
-    else if (user2_turn) finishObj.who_plays = "u2"
+function check_who_plays() {
+    if (player1_turn) finishObj.who_plays = "u1"
+    else if (player2_turn) finishObj.who_plays = "u2"
 }
 
 function end_turn() {
     turn_end = true
-    if (user1_turn) {
-        user1_turn = false
-        user2_turn = true
+    if (player1_turn) {
+        player1_turn = false
+        player2_turn = true
     }
     else {
-        user1_turn = true
-        user2_turn = false
+        player1_turn = true
+        player2_turn = false
     }
 }
 function can_i_play() {
@@ -166,20 +166,20 @@ function servResponse(req, res) {
         finishObj = qs.parse(allData)
 
         switch (finishObj.akcja) {
-            case "DODAJ_UZYTKOWNIKA":
-                dodajUseraDoTablicy();
+            case "ADD_USER":
+                add_user();
                 res.end(JSON.stringify(finishObj));
                 break;
-            case "USUN_UZYTKOWNIKA":
-                wyczyscTablicaUserow()
+            case "DELETE_USER":
+                clear_array()
                 res.end(JSON.stringify(finishObj));
                 break;
-            case "SPRAWDZ_UZYTKOWNIKA":
-                czyJestDwochUserow()
+            case "CHECK_USERS":
+                check_for_two_users()
                 res.end(JSON.stringify(finishObj));
                 break;
             case "CHECK":
-                check()
+                check_who_plays()
                 res.end(JSON.stringify(finishObj));
                 break;
             case "CAN_I_PLAY":

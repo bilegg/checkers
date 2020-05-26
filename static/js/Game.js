@@ -8,7 +8,7 @@ function Game() {
     var test = 10;
 
     // (białe 1, czarne 0)
-    var szachownica = [
+    var board = [
 
         [1, 0, 1, 0, 1, 0, 1, 0],
         [0, 1, 0, 1, 0, 1, 0, 1],
@@ -22,7 +22,7 @@ function Game() {
     ];
 
     // (białe - 1, czarne - 2, 0 - puste)
-    var pionki = [
+    var pawns = [
 
         [0, 2, 0, 2, 0, 2, 0, 2],
         [2, 0, 2, 0, 2, 0, 2, 0],
@@ -39,7 +39,7 @@ function Game() {
     this.user = 1;
 
     var init = function () {
-        $("h1").html("gra startuje, zmienna test = " + test)
+        $("h1").html("game starts, test variable = " + test)
 
         scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(
@@ -101,16 +101,16 @@ function Game() {
         var x = 300;
         var y = 0;
         var z = -400;
-        for (var i = 0; i < szachownica.length; i++) {
-            for (var k = 0; k < szachownica[i].length; k++) {
+        for (var i = 0; i < board.length; i++) {
+            for (var k = 0; k < board[i].length; k++) {
                 var cube_black = new THREE.Mesh(geometry, material_black);
                 var cube_white = new THREE.Mesh(geometry, material_white);
-                if (szachownica[i][k] == 1) {
+                if (board[i][k] == 1) {
                     cube_white.userData = { color: "white", row: i, column: k };
                     scene.add(cube_white)
                     cube_white.position.set(x, y, z)
                 }
-                else if (szachownica[i][k] == 0) {
+                else if (board[i][k] == 0) {
                     cube_black.userData = { color: "black", row: i, column: k };
                     scene.add(cube_black)
                     cube_black.position.set(x, y, z)
@@ -160,37 +160,37 @@ function Game() {
                 else if (mid_move) {
                     var row = pawn.userData.row
                     var column = pawn.userData.column
-                    var zbijany_right = scene.getObjectByName("r" + (row - 1) + "c" + (column + 1))
-                    var zbijany_left = scene.getObjectByName("r" + (row - 1) + "c" + (column - 1))
+                    var knocked_right = scene.getObjectByName("r" + (row - 1) + "c" + (column + 1))
+                    var knocked_left = scene.getObjectByName("r" + (row - 1) + "c" + (column - 1))
                     if (intersects[0].object.geometry.type == "BoxGeometry" && intersects[0].object.userData.color == "black" && intersects[0].object.userData.row - pawn.userData.row == -1
                         && (intersects[0].object.userData.column - pawn.userData.column == -1 || intersects[0].object.userData.column - pawn.userData.column == 1)) {
                         pawn.position.x = intersects[0].object.position.x
                         pawn.position.z = intersects[0].object.position.z
-                        pionki[intersects[0].object.userData.row][intersects[0].object.userData.column] = 1
-                        pionki[pawn.userData.row][pawn.userData.column] = 0
+                        pawns[intersects[0].object.userData.row][intersects[0].object.userData.column] = 1
+                        pawns[pawn.userData.row][pawn.userData.column] = 0
 
                         game.EnemyTurn()
                         net.endTurn()
-                        net.sendTable(pionki)
+                        net.sendTable(pawns)
                         net.checkWhoPlays()
 
                         pawn.material = cylinder_material_white
                         mid_move = false
                     }
                     else if (intersects[0].object.geometry.type == "BoxGeometry" && intersects[0].object.userData.color == "black" && intersects[0].object.userData.row - pawn.userData.row == -2
-                        && zbijany_right != undefined && intersects[0].object.userData.column - pawn.userData.column == 2) {
-                        if (zbijany_right.userData.color == "black") {
+                        && knocked_right != undefined && intersects[0].object.userData.column - pawn.userData.column == 2) {
+                        if (knocked_right.userData.color == "black") {
                             pawn.position.x = intersects[0].object.position.x
                             pawn.position.z = intersects[0].object.position.z
-                            pionki[intersects[0].object.userData.row][intersects[0].object.userData.column] = 1
-                            pionki[pawn.userData.row][pawn.userData.column] = 0
-                            pionki[row - 1][column + 1] = 0
+                            pawns[intersects[0].object.userData.row][intersects[0].object.userData.column] = 1
+                            pawns[pawn.userData.row][pawn.userData.column] = 0
+                            pawns[row - 1][column + 1] = 0
 
-                            scene.remove(zbijany_right);
+                            scene.remove(knocked_right);
 
                             game.EnemyTurn()
                             net.endTurn()
-                            net.sendTable(pionki)
+                            net.sendTable(pawns)
                             net.checkWhoPlays()
                             game.addPawns()
 
@@ -199,19 +199,19 @@ function Game() {
                         }
                     }
                     else if (intersects[0].object.geometry.type == "BoxGeometry" && intersects[0].object.userData.color == "black" && intersects[0].object.userData.row - pawn.userData.row == -2
-                        && zbijany_left != undefined && intersects[0].object.userData.column - pawn.userData.column == -2) {
-                        if (zbijany_left.userData.color == "black") {
+                        && knocked_left != undefined && intersects[0].object.userData.column - pawn.userData.column == -2) {
+                        if (knocked_left.userData.color == "black") {
                             pawn.position.x = intersects[0].object.position.x
                             pawn.position.z = intersects[0].object.position.z
-                            pionki[intersects[0].object.userData.row][intersects[0].object.userData.column] = 1
-                            pionki[pawn.userData.row][pawn.userData.column] = 0
-                            pionki[row - 1][column - 1] = 0
+                            pawns[intersects[0].object.userData.row][intersects[0].object.userData.column] = 1
+                            pawns[pawn.userData.row][pawn.userData.column] = 0
+                            pawns[row - 1][column - 1] = 0
                             
-                            scene.remove(zbijany_left);
+                            scene.remove(knocked_left);
 
                             game.EnemyTurn()
                             net.endTurn()
-                            net.sendTable(pionki)
+                            net.sendTable(pawns)
                             net.checkWhoPlays()
                             game.addPawns()
 
@@ -237,18 +237,18 @@ function Game() {
                 else if (mid_move) {
                     var row = pawn.userData.row
                     var column = pawn.userData.column
-                    var zbijany_left = scene.getObjectByName("r" + (row + 1) + "c" + (column + 1))
-                    var zbijany_right = scene.getObjectByName("r" + (row + 1) + "c" + (column - 1))
+                    var knocked_left = scene.getObjectByName("r" + (row + 1) + "c" + (column + 1))
+                    var knocked_right = scene.getObjectByName("r" + (row + 1) + "c" + (column - 1))
                     if (intersects[0].object.geometry.type == "BoxGeometry" && intersects[0].object.userData.color == "black" && intersects[0].object.userData.row - pawn.userData.row == 1
                         && (intersects[0].object.userData.column - pawn.userData.column == -1 || intersects[0].object.userData.column - pawn.userData.column == 1)) {
                         pawn.position.x = intersects[0].object.position.x
                         pawn.position.z = intersects[0].object.position.z
-                        pionki[intersects[0].object.userData.row][intersects[0].object.userData.column] = 2
-                        pionki[pawn.userData.row][pawn.userData.column] = 0
+                        pawns[intersects[0].object.userData.row][intersects[0].object.userData.column] = 2
+                        pawns[pawn.userData.row][pawn.userData.column] = 0
 
                         game.EnemyTurn()
                         net.endTurn()
-                        net.sendTable(pionki)
+                        net.sendTable(pawns)
                         net.checkWhoPlays()
                         game.addPawns()
 
@@ -256,19 +256,19 @@ function Game() {
                         mid_move = false
                     }
                     else if (intersects[0].object.geometry.type == "BoxGeometry" && intersects[0].object.userData.color == "black" && intersects[0].object.userData.row - pawn.userData.row == 2
-                        && zbijany_right != undefined && intersects[0].object.userData.column - pawn.userData.column == -2) {
-                        if (zbijany_right.userData.color == "white") {
+                        && knocked_right != undefined && intersects[0].object.userData.column - pawn.userData.column == -2) {
+                        if (knocked_right.userData.color == "white") {
                             pawn.position.x = intersects[0].object.position.x
                             pawn.position.z = intersects[0].object.position.z
-                            pionki[intersects[0].object.userData.row][intersects[0].object.userData.column] = 2
-                            pionki[pawn.userData.row][pawn.userData.column] = 0
-                            pionki[row + 1][column - 1] = 0
+                            pawns[intersects[0].object.userData.row][intersects[0].object.userData.column] = 2
+                            pawns[pawn.userData.row][pawn.userData.column] = 0
+                            pawns[row + 1][column - 1] = 0
 
-                            scene.remove(zbijany_right);
+                            scene.remove(knocked_right);
 
                             game.EnemyTurn()
                             net.endTurn()
-                            net.sendTable(pionki)
+                            net.sendTable(pawns)
                             net.checkWhoPlays()
                             game.addPawns()
 
@@ -277,19 +277,19 @@ function Game() {
                         }
                     }
                     else if (intersects[0].object.geometry.type == "BoxGeometry" && intersects[0].object.userData.color == "black" && intersects[0].object.userData.row - pawn.userData.row == 2
-                        && zbijany_left != undefined && intersects[0].object.userData.column - pawn.userData.column == 2) {
-                        if (zbijany_left.userData.color == "white") {
+                        && knocked_left != undefined && intersects[0].object.userData.column - pawn.userData.column == 2) {
+                        if (knocked_left.userData.color == "white") {
                             pawn.position.x = intersects[0].object.position.x
                             pawn.position.z = intersects[0].object.position.z
-                            pionki[intersects[0].object.userData.row][intersects[0].object.userData.column] = 2
-                            pionki[pawn.userData.row][pawn.userData.column] = 0
-                            pionki[row + 1][column + 1] = 0
+                            pawns[intersects[0].object.userData.row][intersects[0].object.userData.column] = 2
+                            pawns[pawn.userData.row][pawn.userData.column] = 0
+                            pawns[row + 1][column + 1] = 0
                             
-                            scene.remove(zbijany_left);
+                            scene.remove(knocked_left);
 
                             game.EnemyTurn()
                             net.endTurn()
-                            net.sendTable(pionki)
+                            net.sendTable(pawns)
                             net.checkWhoPlays()
                             game.addPawns()
 
@@ -319,25 +319,25 @@ function Game() {
 
 
 
-        for (var i = 0; i < pionki.length; i++) {
-            for (var k = 0; k < pionki[i].length; k++) {
+        for (var i = 0; i < pawns.length; i++) {
+            for (var k = 0; k < pawns[i].length; k++) {
                 var cylinder_white = new THREE.Mesh(cylinder_geometry, cylinder_material_white);
                 var cylinder_black = new THREE.Mesh(cylinder_geometry, cylinder_material_black);
-                if (pionki[i][k] == 1) {
+                if (pawns[i][k] == 1) {
                     cylinder_white.userData = { color: "white", row: i, column: k };
                     cylinder_white.name = "r" + i + "c" + k
                     pawn_holder.push(cylinder_white)
                     scene.add(cylinder_white)
                     cylinder_white.position.set(x, y, z)
                 }
-                else if (pionki[i][k] == 2) {
+                else if (pawns[i][k] == 2) {
                     cylinder_black.userData = { color: "black", row: i, column: k };
                     cylinder_black.name = "r" + i + "c" + k
                     pawn_holder.push(cylinder_black)
                     scene.add(cylinder_black)
                     cylinder_black.position.set(x, y, z)
                 }
-                else if (pionki[i][k] == 0) { }
+                else if (pawns[i][k] == 0) { }
                 z += 100
                 if (z == 400) {
                     z = -400
@@ -357,11 +357,11 @@ function Game() {
 
     this.updateBoards = function (table) {
         $(".tab_image").html("")
-        pionki = table
+        pawns = table
         if (game.user == 1) {
-            for (var i = pionki.length - 1; i >= 0; i--) {
-                for (var x = pionki.length - 1; x >= 0; x--) {
-                    var string = pionki[i][x]
+            for (var i = pawns.length - 1; i >= 0; i--) {
+                for (var x = pawns.length - 1; x >= 0; x--) {
+                    var string = pawns[i][x]
                     $(".tab_image").append(string)
                 }
                 var br = "<br>"
@@ -369,9 +369,9 @@ function Game() {
             }
         }
         else if (game.user == 2) {
-            for (var i = 0; i < pionki.length; i++) {
-                for (var x = 0; x < pionki[i].length; x++) {
-                    var string = pionki[i][x]
+            for (var i = 0; i < pawns.length; i++) {
+                for (var x = 0; x < pawns[i].length; x++) {
+                    var string = pawns[i][x]
                     $(".tab_image").append(string)
                 }
                 var br = "<br>"
@@ -383,9 +383,9 @@ function Game() {
         if (game.user == 1) {
             var tab_image = $("<div>")
             tab_image.addClass("tab_image")
-            for (var i = pionki.length - 1; i >= 0; i--) {
-                for (var x = pionki.length - 1; x >= 0; x--) {
-                    var string = pionki[i][x]
+            for (var i = pawns.length - 1; i >= 0; i--) {
+                for (var x = pawns.length - 1; x >= 0; x--) {
+                    var string = pawns[i][x]
                     tab_image.append(string)
                 }
                 var br = "<br>"
@@ -396,9 +396,9 @@ function Game() {
         else if (game.user == 2) {
             var tab_image = $("<div>")
             tab_image.addClass("tab_image")
-            for (var i = 0; i < pionki.length; i++) {
-                for (var x = 0; x < pionki[i].length; x++) {
-                    var string = pionki[i][x]
+            for (var i = 0; i < pawns.length; i++) {
+                for (var x = 0; x < pawns[i].length; x++) {
+                    var string = pawns[i][x]
                     tab_image.append(string)
                 }
                 var br = "<br>"
@@ -410,7 +410,7 @@ function Game() {
 
     this.setTest = function (val) {
         test = val;
-        $("h1").html("ustawiam test w klasie Game na: " + test)
+        $("h1").html("variable test in Game: " + test)
     }
 
     this.getTest = function () {

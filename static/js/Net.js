@@ -104,7 +104,7 @@ function Net() {
         $.ajax({
             url: "",
             data: {
-                akcja: "DODAJ_UZYTKOWNIKA",
+                akcja: "ADD_USER",
                 user: $("#txt1").val(),
                 user_number: 0,
                 check_user: false
@@ -114,8 +114,8 @@ function Net() {
 
                 var obj = JSON.parse(data)
                 if (obj.user !== "full") {
-                    if (obj.user == "zajete") {
-                        alert("Nazwa zajeta")
+                    if (obj.user == "taken") {
+                        alert("Name taken")
                     }
                     else {
                         if (obj.user_number == 1) {
@@ -128,7 +128,7 @@ function Net() {
                                 $.ajax({
                                     url: "",
                                     data: {
-                                        akcja: "SPRAWDZ_UZYTKOWNIKA",
+                                        akcja: "CHECK_USERS",
                                         user_number: 0,
                                         check_user: false
                                     },
@@ -160,7 +160,7 @@ function Net() {
                     }
                 }
                 else {
-                    alert("Juz jest 2 graczy")
+                    alert("There are 2 players already")
                 }
             },
             error: function (xhr, status, error) {
@@ -172,11 +172,11 @@ function Net() {
         $.ajax({
             url: "",
             data: {
-                akcja: "USUN_UZYTKOWNIKA",
+                akcja: "DELETE_USER",
             },
             type: "POST",
             success: function (data) {
-                alert("Zresetowano dane")
+                alert("Data reset")
             },
             error: function (xhr, status, error) {
                 console.log(xhr);
