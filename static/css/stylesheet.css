@@ -1,0 +1,98 @@
+h1 {
+    color: red;
+}
+
+#turn_end {
+    background-color: black;
+    opacity: 0.5;
+    width: 100%;
+    display: none;
+    height: 100vh;
+    color: white;
+    text-align: center;
+}
+
+#turn_end>p {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 60px;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    background-color: lightblue;
+}
+
+#waiting {
+    background-color: black;
+    opacity: 0.5;
+    width: 100%;
+    text-align: center;
+    display: none;
+    height: 100vh;
+    color: white;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+#waiting>p {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 60px;
+}
+
+header {
+    margin-bottom: 100px;
+    border-bottom: 1px solid green;
+}
+
+p {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 30px;
+    margin: 0;
+    padding: 0;
+    padding-top: 30px;
+}
+
+input {
+    width: 150px;
+    height: 50px;
+    text-align: center;
+    border-radius: 15px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+button {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    margin-top: 25px;
+    width: 150px;
+    height: 50px;
+    border-radius: 15px;
+}
+
+#root {
+    display: none;
+    width: 100%;
+    position: relative;
+}
+
+#cover {
+    background-color: lightblue;
+    margin: 0 auto;
+    text-align: center;
+    width: 300px;
+    display: block;
+    height: 350px;
+    border-radius: 15px;
+}
+
+.tab_image {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    width: 200px;
+    height: 300px;
+    font-size: 30px;
+    line-height: 1.2;
+    letter-spacing: 10px;
+    background-color: rgb(243, 228, 18);
+}
